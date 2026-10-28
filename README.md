@@ -4,6 +4,8 @@ Web API dùng ASP.NET Core .NET 10, Entity Framework Core và PostgreSQL. Tuần
 
 Sơ đồ thành phần: [docs/architecture.md](docs/architecture.md).
 
+![Sơ đồ kiến trúc QTKD tuần 05](docs/architecture.png)
+
 ## Yêu cầu
 
 - .NET SDK 10
