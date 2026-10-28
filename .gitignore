@@ -1,0 +1,17 @@
+# .NET build output
+**/bin/
+**/obj/
+.build-check/
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Local secrets and developer-specific configuration
+.env
+.env.*
+QTKD.Api/appsettings.Development.json
+
+# Assignment source PDFs stay outside the source repository
+/TH_Phase2_QTKD.pdf
+/Tuan_02_QTKD_Req.pdf
