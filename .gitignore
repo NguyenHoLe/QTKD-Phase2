@@ -10,7 +10,7 @@
 # Local secrets and developer-specific configuration
 .env
 .env.*
-QTKD.Api/appsettings.Development.json
+**/appsettings.Development.json
 
 # Assignment source PDFs stay outside the source repository
 /TH_Phase2_QTKD.pdf

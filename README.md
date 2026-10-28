@@ -31,7 +31,7 @@ dotnet build QTKD.sln
 Project đã có `UserSecretsId`. Trong PowerShell, lưu connection string cục bộ bằng lệnh sau; thay `YOUR_POSTGRES_PASSWORD` bằng mật khẩu PostgreSQL của bạn. Nếu dùng username khác `postgres`, thay username tương ứng.
 
 ```powershell
-dotnet user-secrets set "ConnectionStrings:Qtkd" 'Host=localhost;Port=5432;Database=qtkd;Username=postgres;Password=YOUR_POSTGRES_PASSWORD' --project QTKD.Api
+dotnet user-secrets set "ConnectionStrings:Qtkd" 'Host=localhost;Port=5432;Database=qtkd;Username=postgres;Password=YOUR_POSTGRES_PASSWORD' --project source/QTKD.Api
 ```
 
 ## Cài công cụ EF Core CLI
@@ -53,15 +53,15 @@ dotnet tool update --global dotnet-ef --version 10.0.14
 Chạy từ thư mục chứa `QTKD.sln`:
 
 ```powershell
-dotnet ef database update --project QTKD.Api
+dotnet ef database update --project source/QTKD.Api
 ```
 
-Lệnh này áp dụng các migration trong `QTKD.Api/Migrations`. Migration `AddSampleData` thêm dữ liệu mẫu: hai Customer, một Contract Draft và một PriceList có hai PriceItem. Mã dịch vụ và đơn giá chỉ là dữ liệu minh họa.
+Lệnh này áp dụng các migration trong `source/QTKD.Api/Migrations`. Migration `AddSampleData` thêm dữ liệu mẫu: hai Customer, một Contract Draft và một PriceList có hai PriceItem. Mã dịch vụ và đơn giá chỉ là dữ liệu minh họa.
 
 ## Khởi động API
 
 ```powershell
-dotnet run --project QTKD.Api
+dotnet run --project source/QTKD.Api
 ```
 
 Xem địa chỉ `https://localhost:<port>` hoặc `http://localhost:<port>` được in ra trong terminal khi ứng dụng khởi động.
