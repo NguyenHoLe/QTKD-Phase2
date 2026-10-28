@@ -8,18 +8,30 @@ Sơ đồ thành phần: [docs/architecture.md](docs/architecture.md).
 
 ## Yêu cầu
 
+- Git
 - .NET SDK 10
 - PostgreSQL đang chạy trên máy
 - Công cụ EF Core CLI (`dotnet-ef`) phiên bản 10
 
+## Lấy source trên máy mới
+
+Trong PowerShell, chuyển tới thư mục muốn chứa project rồi chạy:
+
+```powershell
+git clone https://github.com/NguyenHoLe/QTKD-Phase2.git
+cd QTKD-Phase2
+dotnet restore
+dotnet build QTKD.sln
+```
+
 ## Cấu hình database
 
-Tạo database PostgreSQL tên `qtkd` (nếu chưa có). Không lưu mật khẩu trong source code hoặc commit lên Git.
+Đảm bảo PostgreSQL đang chạy và tài khoản trong connection string có quyền tạo database. Lệnh `dotnet ef database update` bên dưới sẽ tạo database `qtkd` nếu chưa có và áp dụng các migration. Không lưu mật khẩu trong source code hoặc commit lên Git.
 
 Project đã có `UserSecretsId`. Trong PowerShell, lưu connection string cục bộ bằng lệnh sau; thay `YOUR_POSTGRES_PASSWORD` bằng mật khẩu PostgreSQL của bạn. Nếu dùng username khác `postgres`, thay username tương ứng.
 
 ```powershell
-dotnet user-secrets set "ConnectionStrings:Qtkd" "Host=localhost;Port=5432;Database=qtkd;Username=postgres;Password=YOUR_POSTGRES_PASSWORD" --project QTKD.Api
+dotnet user-secrets set "ConnectionStrings:Qtkd" 'Host=localhost;Port=5432;Database=qtkd;Username=postgres;Password=YOUR_POSTGRES_PASSWORD' --project QTKD.Api
 ```
 
 ## Cài công cụ EF Core CLI
