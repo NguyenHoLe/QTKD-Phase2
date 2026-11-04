@@ -36,6 +36,27 @@ public class QtkdDbContext(DbContextOptions<QtkdDbContext> options)
             .HasForeignKey(contract => contract.CustomerId)
             .IsRequired();
 
+        modelBuilder.Entity<Contract>()
+            .HasIndex(contract => contract.ContractNo)
+            .IsUnique();
+
+        modelBuilder.Entity<Contract>()
+            .Property(contract => contract.ContentSummary)
+            .HasMaxLength(4000);
+
+        modelBuilder.Entity<Contract>()
+            .Property(contract => contract.AttachmentFileName)
+            .HasMaxLength(255);
+
+        modelBuilder.Entity<ContractSubmission>()
+            .HasKey(submission => submission.ContractId);
+
+        modelBuilder.Entity<ContractSubmission>()
+            .HasOne(submission => submission.Contract)
+            .WithOne(contract => contract.Submission)
+            .HasForeignKey<ContractSubmission>(submission => submission.ContractId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<Contract>().HasData(
             new Contract
             {

@@ -16,6 +16,7 @@ builder.Services.AddDbContext<QtkdDbContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<ContractService>();
+builder.Services.AddScoped<PricingService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

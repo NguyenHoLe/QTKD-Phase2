@@ -7,4 +7,7 @@ public sealed record ContractResponse(
     string CustomerName,
     DateOnly StartDate,
     DateOnly EndDate,
-    string Status);
+    string? ContentSummary,
+    string? AttachmentFileName,
+    string Status,
+    DateTime? SubmittedAtUtc);

@@ -30,6 +30,14 @@ namespace QTKD.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AttachmentFileName")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("ContentSummary")
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)");
+
                     b.Property<string>("ContractNo")
                         .IsRequired()
                         .HasColumnType("text");
@@ -49,6 +57,9 @@ namespace QTKD.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ContractNo")
+                        .IsUnique();
+
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Contracts");
@@ -63,6 +74,19 @@ namespace QTKD.Api.Migrations
                             StartDate = new DateOnly(2026, 10, 1),
                             Status = "Draft"
                         });
+                });
+
+            modelBuilder.Entity("QTKD.Api.Models.ContractSubmission", b =>
+                {
+                    b.Property<int>("ContractId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("SubmittedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("ContractId");
+
+                    b.ToTable("ContractSubmission");
                 });
 
             modelBuilder.Entity("QTKD.Api.Models.Customer", b =>
@@ -169,6 +193,17 @@ namespace QTKD.Api.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("QTKD.Api.Models.ContractSubmission", b =>
+                {
+                    b.HasOne("QTKD.Api.Models.Contract", "Contract")
+                        .WithOne("Submission")
+                        .HasForeignKey("QTKD.Api.Models.ContractSubmission", "ContractId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Contract");
+                });
+
             modelBuilder.Entity("QTKD.Api.Models.PriceItem", b =>
                 {
                     b.HasOne("QTKD.Api.Models.PriceList", "PriceList")
@@ -178,6 +213,11 @@ namespace QTKD.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("PriceList");
+                });
+
+            modelBuilder.Entity("QTKD.Api.Models.Contract", b =>
+                {
+                    b.Navigation("Submission");
                 });
 
             modelBuilder.Entity("QTKD.Api.Models.Customer", b =>

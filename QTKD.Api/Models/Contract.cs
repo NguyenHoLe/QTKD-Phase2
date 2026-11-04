@@ -12,7 +12,13 @@ public class Contract
 
     public DateOnly EndDate { get; set; }
 
+    public string? ContentSummary { get; set; }
+
+    public string? AttachmentFileName { get; set; }
+
     public string Status { get; set; } = string.Empty;
 
     public Customer? Customer { get; set; }
+
+    public ContractSubmission? Submission { get; set; }
 }

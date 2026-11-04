@@ -1,0 +1,77 @@
+﻿# Demo API QTKD - Week 06
+Started: 2026-11-05T06:48:22.9035121+07:00
+
+Output file: E:\Homework\PTUDHTTT\QTKD\source\docs\demo\week06-demo-log.txt
+## 1. Create an Active Customer
+POST /api/customers -> 201
+{
+    "id":  21,
+    "name":  "Customer Demo Week06 D194EC953F60",
+    "status":  "Active"
+}
+## 2. Create a Contract Draft
+POST /api/contracts -> 201
+{
+    "id":  11,
+    "contractNo":  "HD-DEMO-D194EC953F60",
+    "customerId":  21,
+    "customerName":  "Customer Demo Week06 D194EC953F60",
+    "startDate":  "2026-11-05",
+    "endDate":  "2027-11-05",
+    "contentSummary":  null,
+    "attachmentFileName":  null,
+    "status":  "Draft",
+    "submittedAtUtc":  null
+}
+POST /api/contracts/11/submit -> 422
+{
+    "code":  "submission_validation_failed",
+    "message":  "Contract does not meet CTR-02 submission requirements. No changes were saved.",
+    "details":  [
+                    "CTR-02 demo assumption: ContentSummary is required.",
+                    "CTR-02 demo assumption: at least one AttachmentFileName is required."
+                ]
+}
+## 3. Complete the Contract and submit
+PUT /api/contracts/11 -> 200
+{
+    "id":  11,
+    "contractNo":  "HD-DEMO-D194EC953F60",
+    "customerId":  21,
+    "customerName":  "Customer Demo Week06 D194EC953F60",
+    "startDate":  "2026-11-05",
+    "endDate":  "2027-11-05",
+    "contentSummary":  "Demo contract content for the Week 06 workflow.",
+    "attachmentFileName":  "HD-DEMO-D194EC953F60.pdf",
+    "status":  "Draft",
+    "submittedAtUtc":  null
+}
+POST /api/contracts/11/submit -> 200
+{
+    "contractId":  11,
+    "status":  "PendingApproval",
+    "submittedAtUtc":  "2026-11-04T23:48:24.9893136Z",
+    "workflowMessage":  "Approval hand-off was recorded. Reviewer assignment and approval steps are not implemented in this demo."
+}
+GET /api/contracts/11 -> 200
+{
+    "id":  11,
+    "contractNo":  "HD-DEMO-D194EC953F60",
+    "customerId":  21,
+    "customerName":  "Customer Demo Week06 D194EC953F60",
+    "startDate":  "2026-11-05",
+    "endDate":  "2027-11-05",
+    "contentSummary":  "Demo contract content for the Week 06 workflow.",
+    "attachmentFileName":  "HD-DEMO-D194EC953F60.pdf",
+    "status":  "PendingApproval",
+    "submittedAtUtc":  "2026-11-04T23:48:24.989313Z"
+}
+POST /api/contracts/11/submit -> 409
+{
+    "code":  "conflict",
+    "message":  "Contract 11 cannot be submitted from status PendingApproval. Only Draft contracts can be submitted.",
+    "details":  null
+}
+## Result
+Demo completed. CustomerId=21 ContractId=11 ContractNo=HD-DEMO-D194EC953F60
+Output saved to E:\Homework\PTUDHTTT\QTKD\source\docs\demo\week06-demo-log.txt
