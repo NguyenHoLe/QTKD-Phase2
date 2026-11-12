@@ -4,9 +4,9 @@ Các lỗi được phát hiện khi rà soát lại mã nguồn tuần 06 trư�
 
 | Mã | Tóm tắt | Mức độ | Trạng thái | Commit sửa |
 |---|---|---|---|---|
-| BUG-01 | Tạo trùng `ContractNo` / `ServiceCode` đồng thời trả `500` | Trung bình | Đã sửa | _(điền hash sau khi commit)_ |
-| BUG-02 | Lỗi đọc request và lỗi `404` không theo mẫu lỗi chung, lộ tên kiểu nội bộ | Thấp | Đã sửa | _(điền hash sau khi commit)_ |
-| BUG-03 | Sửa và Submit cùng lúc có thể vi phạm CTR-01/CTR-02 | Trung bình | Đã sửa | _(điền hash sau khi commit)_ |
+| BUG-01 | Tạo trùng `ContractNo` / `ServiceCode` đồng thời trả `500` | Trung bình | Đã sửa | `a818a36` |
+| BUG-02 | Lỗi đọc request và lỗi `404` không theo mẫu lỗi chung, lộ tên kiểu nội bộ | Thấp | Đã sửa | `a818a36` |
+| BUG-03 | Sửa và Submit cùng lúc có thể vi phạm CTR-01/CTR-02 | Trung bình | Đã sửa | `a818a36` |
 
 ## BUG-01 — Tạo trùng đồng thời trả HTTP 500
 

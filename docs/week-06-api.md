@@ -21,7 +21,7 @@ Base URL: `http://localhost:<port>` (thay `<port>` bằng cổng được `dotne
 | GET | `/api/price-lists/{id}/items` | Xem PriceItem của PriceList | `200`, không có PriceList: `404` |
 | POST | `/api/price-lists/{id}/items` | Thêm PriceItem vào PriceList | `201`, dữ liệu sai: `400`, mã trùng: `409`, PriceList không có: `404` |
 
-Các lỗi nghiệp vụ trả JSON theo dạng:
+Mọi phản hồi lỗi của các endpoint trên đều dùng chung một dạng JSON:
 
 ```json
 {
@@ -30,6 +30,15 @@ Các lỗi nghiệp vụ trả JSON theo dạng:
   "details": ["CTR-02 demo assumption: ContentSummary is required."]
 }
 ```
+
+| HTTP | `code` | Khi nào |
+|---|---|---|
+| `400` | `invalid_request` | Body không phải JSON hợp lệ hoặc sai kiểu dữ liệu, ví dụ `"startDate": "abc"`. `details` chỉ nêu tên trường, không lộ thông tin nội bộ. |
+| `400` | `validation_failed` | Dữ liệu đọc được nhưng vi phạm quy tắc: thiếu tên, ngày sai, Customer không Active, `ContractNo` trùng... |
+| `404` | `not_found` | Không có Customer/Contract/PriceList với id đã cho. |
+| `409` | `conflict` | Sai trạng thái (CTR-01, AC02), gửi lặp (AC05), `ServiceCode` trùng, hoặc bản ghi vừa bị request khác thay đổi. |
+| `422` | `submission_validation_failed` | Contract chưa đạt CTR-02 khi Submit; `details` liệt kê điều kiện chưa đạt. |
+| `500` | `internal_error` | Lỗi ngoài dự kiến; chi tiết chỉ ghi vào log server. |
 
 ## Request/response mẫu
 
@@ -126,13 +135,13 @@ Thêm PriceItem bằng `POST /api/price-lists/{id}/items`:
 | Yêu cầu | Đoạn xử lý | Kết quả kiểm tra |
 |---|---|---|
 | AC01 — người không có quyền không được gửi | Phase 1 xác định tác nhân là Nhân viên Kinh doanh, nhưng solution chưa có tài khoản, đăng nhập hoặc chính sách phân quyền. API hiện chưa xác thực người gọi, nên chưa thể từ chối đúng theo vai trò hoặc kiểm thử AC01. | Đây là phần chưa hoàn thành; cần bổ sung danh tính và quyền trước khi tuyên bố AC01 đạt. Không giả lập quyền bằng một header không an toàn. |
-| AC02 — trạng thái không hợp lệ thì từ chối | `ContractService.SubmitAsync` chỉ chấp nhận `Draft`; `UpdateAsync` dùng `ContractStatuses.CanEdit`. | Submit/update ở trạng thái khác trả `409`; không đổi Contract. |
-| AC03 / CTR-02 — thiếu điều kiện thì không tạo quy trình | `ContractService.GetSubmissionErrors` kiểm tra Customer Active, khoảng ngày hợp lệ, nội dung và tên tệp demo. | Trả `422` với `details`; status và bảng `ContractSubmission` không đổi. |
-| AC04 — hợp lệ thì tạo quy trình và chờ duyệt | `ContractService.SubmitAsync` ghi `ContractSubmission` và đổi status sang `PendingApproval` trong cùng `SaveChanges`. | `200` kèm `SubmittedAtUtc`; GET Contract cho thấy trạng thái mới. |
-| CTR-01 — chỉ sửa Draft hoặc RevisionRequested | `ContractService.UpdateAsync` kiểm tra `ContractStatuses.CanEdit`; request không có trường `status`. | Sửa `PendingApproval` bị từ chối `409`; client không thể dùng endpoint cập nhật để đặt `Approved`. |
-| CTR-02 — Customer, ngày hiệu lực, nội dung/tệp hợp lệ | `ValidateEditableFieldsAsync` kiểm tra Customer Active, ngày bắt đầu/kết thúc và cấu trúc dữ liệu; `GetSubmissionErrors` kiểm tra đủ điều kiện khi Submit. | Draft có thể lưu thiếu nội dung/tệp để demo lỗi Submit; lỗi không ghi thay đổi. |
-| CTR-03 — không chuyển Draft thẳng sang Approved | Contract mới luôn được tạo ở `Draft`; `SubmitAsync` chỉ chuyển sang `PendingApproval`; DTO cập nhật không nhận status. | Không có API tuần 06 nào chuyển thẳng sang `Approved`. |
-| AC05 / A4 — gửi lặp hoặc cạnh tranh không tạo xử lý mới | Một-một `ContractSubmission` dùng `ContractId` làm khóa chính; trạng thái cũng đổi khỏi Draft. | Verify đã kiểm tra gửi lặp tuần tự trả `409`. Khóa chính bảo vệ không tạo hai bản ghi khi có cạnh tranh; kịch bản gửi đồng thời chưa được chạy trong demo này. |
+| AC02 — trạng thái không hợp lệ thì từ chối | `ContractService.SubmitAsync` gọi `ContractRules.CanTransition(status, PendingApproval)`, chỉ đúng với `Draft`; `UpdateAsync` gọi `ContractRules.CanEdit`. | Submit/update ở trạng thái khác trả `409`; không đổi Contract. |
+| AC03 / CTR-02 — thiếu điều kiện thì không tạo quy trình | `ContractRules.GetSubmissionErrors` kiểm tra Customer Active, khoảng ngày hợp lệ, nội dung và tên tệp demo. | Trả `422` với `details`; status và bảng `ContractSubmission` không đổi. |
+| AC04 — hợp lệ thì tạo quy trình và chờ duyệt | `ContractService.SubmitAsync` ghi `ContractSubmission` và đổi status sang `PendingApproval` trong cùng `SaveChanges` (một transaction). | `200` kèm `SubmittedAtUtc`; GET Contract cho thấy trạng thái mới. |
+| CTR-01 — chỉ sửa Draft hoặc RevisionRequested | `ContractRules.CanEdit`, gọi từ `ContractService.UpdateAsync`; request không có trường `status`. Concurrency token `Contract.Version` (`xmin`) chặn trường hợp hợp đồng vừa được Submit trong lúc đang sửa. | Sửa `PendingApproval` bị từ chối `409`; client không thể dùng endpoint cập nhật để đặt `Approved`. |
+| CTR-02 — Customer, ngày hiệu lực, nội dung/tệp hợp lệ | `ValidateEditableFieldsAsync` kiểm tra Customer Active, ngày bắt đầu/kết thúc và cấu trúc dữ liệu; `ContractRules.GetSubmissionErrors` kiểm tra đủ điều kiện khi Submit. | Draft có thể lưu thiếu nội dung/tệp để demo lỗi Submit; lỗi không ghi thay đổi. |
+| CTR-03 — không chuyển Draft thẳng sang Approved | `ContractRules.CanTransition` dùng bảng chuyển trạng thái theo sơ đồ Phase 1: Draft → PendingApproval; PendingApproval → RevisionRequested/Approved/Rejected; RevisionRequested → Draft; Approved → Effective. Contract mới luôn ở `Draft`; DTO không nhận status. | `CanTransition(Draft, Approved)` trả `false`; gửi `"status": "Approved"` trong POST/PUT bị bỏ qua, Contract vẫn `Draft`. |
+| AC05 / A4 — gửi lặp hoặc cạnh tranh không tạo xử lý mới | `ContractSubmission` dùng `ContractId` làm khóa chính, kết hợp concurrency token `xmin` trên Contract; nếu SaveChanges bị từ chối thì trả `409`. | Gửi lặp tuần tự trả `409`. Đã thử thủ công 10 request Submit đồng thời trên 3 hợp đồng: mỗi hợp đồng đúng 1 lần `200`, còn lại `409`, chỉ một bản ghi submission. Tuần 07 sẽ tự động hóa kịch bản này. |
 
 ## Giả định và giới hạn demo
 
@@ -140,6 +149,8 @@ Thêm PriceItem bằng `POST /api/price-lists/{id}/items`:
 - `AttachmentFileName` chỉ lưu tên tệp metadata, chưa upload hoặc lưu file bytes.
 - Khoảng hiệu lực hợp lệ trong demo khi hai ngày có giá trị và `EndDate >= StartDate`; chưa tự đặt quy tắc “phải bắt đầu trong tương lai”.
 - `ContractSubmission` ghi một lần bàn giao và thời điểm UTC. Chưa có reviewer, các bước phê duyệt, lịch sử nhiều phiên, hoặc xử lý kết quả duyệt.
+- Vì `ContractSubmission` dùng `ContractId` làm khóa chính, mỗi Contract chỉ có tối đa một bản ghi gửi. Khi làm luồng RevisionRequested → Draft → gửi lại (ngoài phạm vi tuần 06), cần đổi sang bảng nhiều phiên gửi có khóa riêng. AC05 chỉ cấm trùng *trong cùng một lần gửi*, nên việc gửi lại sau khi chỉnh sửa vẫn hợp lệ về nghiệp vụ.
+- Bảng chuyển trạng thái trong `ContractRules` có đủ các trạng thái của sơ đồ Phase 1, nhưng API tuần 06 chỉ thực hiện Draft → PendingApproval (US03). Các chuyển trạng thái còn lại thuộc các User Story phê duyệt sau.
 - Chưa có xác thực/phân quyền cho tác nhân Nhân viên Kinh doanh; AC01 chưa được triển khai. Cần có hệ thống danh tính và chính sách quyền để xác định tài khoản nào được submit.
 
 ## Checklist quay demo

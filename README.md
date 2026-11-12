@@ -58,7 +58,11 @@ Chạy từ thư mục chứa `QTKD.sln`:
 dotnet ef database update --project QTKD.Api
 ```
 
-Lệnh này áp dụng các migration trong `QTKD.Api/Migrations`. Migration `AddSampleData` thêm dữ liệu mẫu: hai Customer, một Contract Draft và một PriceList có hai PriceItem. Migration tuần 06 thêm nội dung/tên tệp demo cho Contract và bảng `ContractSubmission` để ghi nhận một lần bàn giao mô phỏng. Mã dịch vụ và đơn giá chỉ là dữ liệu minh họa.
+Lệnh này áp dụng các migration trong `QTKD.Api/Migrations`. Migration `AddSampleData` thêm dữ liệu mẫu: hai Customer, một Contract Draft và một PriceList có hai PriceItem. Migration tuần 06 thêm nội dung/tên tệp demo cho Contract và bảng `ContractSubmission` để ghi nhận một lần bàn giao mô phỏng. Migration `ContractConcurrencyToken` dùng cột hệ thống `xmin` của PostgreSQL làm concurrency token cho Contract (không tạo cột mới, chỉ ghi lịch sử migration). Mã dịch vụ và đơn giá chỉ là dữ liệu minh họa.
+
+Nếu database đã được tạo từ trước, chạy lại `dotnet ef database update --project QTKD.Api` để áp dụng migration mới.
+
+Danh sách lỗi đã phát hiện và cách sửa: [docs/bug-log.md](docs/bug-log.md).
 
 ## Khởi động API
 
