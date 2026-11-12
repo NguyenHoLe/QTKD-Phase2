@@ -1,0 +1,118 @@
+Test run for E:\Homework\PTUDHTTT\QTKD\source\tests\QTKD.UnitTests\bin\Debug\net10.0\QTKD.UnitTests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.12)
+[xUnit.net 00:00:00.15]   Discovering: QTKD.UnitTests
+[xUnit.net 00:00:00.24]   Discovered:  QTKD.UnitTests
+[xUnit.net 00:00:00.29]   Starting:    QTKD.UnitTests
+  Passed QTKD.UnitTests.Ctr01EditRuleTests.CanEdit_ReturnsTrue_ForDraftAndRevisionRequested(status: "draft") [8 ms]
+  Passed QTKD.UnitTests.Ctr02SubmissionRuleTests.GetSubmissionErrors_RejectsMissingDates [11 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsFalse_ForTransitionsOutsideTheStateMachine(from: "UnknownStatus", to: "PendingApproval") [8 ms]
+  Passed QTKD.UnitTests.Ctr01EditRuleTests.CanEdit_ReturnsTrue_ForDraftAndRevisionRequested(status: "RevisionRequested") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr01EditRuleTests.CanEdit_ReturnsTrue_ForDraftAndRevisionRequested(status: "Draft") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr01EditRuleTests.CanEdit_ReturnsFalse_ForAnyOtherStatus(status: null) [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsFalse_ForTransitionsOutsideTheStateMachine(from: "Rejected", to: "Approved") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsFalse_ForTransitionsOutsideTheStateMachine(from: null, to: "PendingApproval") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr02SubmissionRuleTests.GetSubmissionErrors_RejectsMissingCustomer [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsFalse_ForTransitionsOutsideTheStateMachine(from: "Draft", to: "Approved") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsFalse_ForTransitionsOutsideTheStateMachine(from: "PendingApproval", to: "Draft") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsFalse_ForTransitionsOutsideTheStateMachine(from: "Effective", to: "Draft") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr01EditRuleTests.CanEdit_ReturnsFalse_ForAnyOtherStatus(status: "Effective") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsFalse_ForTransitionsOutsideTheStateMachine(from: "Draft", to: null) [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsFalse_ForTransitionsOutsideTheStateMachine(from: "Draft", to: "Effective") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsFalse_ForTransitionsOutsideTheStateMachine(from: "Draft", to: "Draft") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsFalse_ForTransitionsOutsideTheStateMachine(from: "PendingApproval", to: "PendingApproval") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr01EditRuleTests.CanEdit_ReturnsFalse_ForAnyOtherStatus(status: "PendingApproval") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr02SubmissionRuleTests.GetSubmissionErrors_RejectsMissingAttachment(fileName: "") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsFalse_ForTransitionsOutsideTheStateMachine(from: "Draft", to: "Rejected") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr01EditRuleTests.CanEdit_ReturnsFalse_ForAnyOtherStatus(status: "Approved") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr01EditRuleTests.CanEdit_ReturnsFalse_ForAnyOtherStatus(status: "Rejected") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr01EditRuleTests.CanEdit_ReturnsFalse_ForAnyOtherStatus(status: "UnknownStatus") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr01EditRuleTests.CanEdit_ReturnsFalse_ForAnyOtherStatus(status: "") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsTrue_ForTransitionsInTheStateMachine(from: "RevisionRequested", to: "Draft") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr02SubmissionRuleTests.GetSubmissionErrors_RejectsMissingAttachment(fileName: "   ") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr02SubmissionRuleTests.GetSubmissionErrors_RejectsMissingAttachment(fileName: null) [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsTrue_ForTransitionsInTheStateMachine(from: "PendingApproval", to: "Rejected") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr02SubmissionRuleTests.GetSubmissionErrors_RejectsMissingContent(content: null) [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsTrue_ForTransitionsInTheStateMachine(from: "PendingApproval", to: "Approved") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsTrue_ForTransitionsInTheStateMachine(from: "draft", to: "pendingapproval") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsTrue_ForTransitionsInTheStateMachine(from: "Draft", to: "PendingApproval") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsTrue_ForTransitionsInTheStateMachine(from: "PendingApproval", to: "RevisionRequested") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr02SubmissionRuleTests.GetSubmissionErrors_RejectsMissingContent(content: "") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.CanTransition_ReturnsTrue_ForTransitionsInTheStateMachine(from: "Approved", to: "Effective") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr02SubmissionRuleTests.GetSubmissionErrors_RejectsMissingContent(content: "   ") [< 1 ms]
+  Passed QTKD.UnitTests.Ctr02SubmissionRuleTests.GetSubmissionErrors_AllowsOneDayPeriod_WhenStartEqualsEnd [< 1 ms]
+[xUnit.net 00:00:00.40]   Finished:    QTKD.UnitTests
+  Passed QTKD.UnitTests.Ctr02SubmissionRuleTests.GetSubmissionErrors_ListsEveryUnmetCondition [2 ms]
+  Passed QTKD.UnitTests.Ctr02SubmissionRuleTests.GetSubmissionErrors_RejectsInactiveCustomer [< 1 ms]
+  Passed QTKD.UnitTests.Ctr02SubmissionRuleTests.GetSubmissionErrors_ReturnsNoErrors_WhenAllConditionsAreMet [< 1 ms]
+  Passed QTKD.UnitTests.Ctr02SubmissionRuleTests.GetSubmissionErrors_RejectsEndDateBeforeStartDate [< 1 ms]
+  Passed QTKD.UnitTests.ApiErrorFormatTests.FromModelState_ReportsMissingBody [20 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.Submit_FromDraft_LeadsOnlyToPendingApproval [6 ms]
+  Passed QTKD.UnitTests.Ctr03TransitionRuleTests.OnlyPendingApproval_CanMoveToApproved [< 1 ms]
+  Passed QTKD.UnitTests.ApiErrorFormatTests.FromModelState_NamesTheInvalidField_WithoutInternalTypeNames [1 ms]
+  Passed QTKD.UnitTests.ApiErrorFormatTests.FromModelState_ReportsInvalidJson [< 1 ms]
+Results File: E:\Homework\PTUDHTTT\QTKD\source\docs\test-results\week07-UnitTests.trx
+
+Test Run Successful.
+Total tests: 46
+     Passed: 46
+ Total time: 1.2113 Seconds
+Test run for E:\Homework\PTUDHTTT\QTKD\source\tests\QTKD.IntegrationTests\bin\Debug\net10.0\QTKD.IntegrationTests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.12)
+[xUnit.net 00:00:00.11]   Discovering: QTKD.IntegrationTests
+[xUnit.net 00:00:00.17]   Discovered:  QTKD.IntegrationTests
+[xUnit.net 00:00:00.21]   Starting:    QTKD.IntegrationTests
+  Passed QTKD.IntegrationTests.SubmitContractApiTests.TC05_SubmitWithoutRequiredContentAndFile_IsRejected_AndStaysDraft [1 s]
+  Passed QTKD.IntegrationTests.SubmitContractApiTests.TC05_SubmitMissingOneRequiredItem_NamesThatItem(withContent: False, withAttachment: True, expectedMissing: "ContentSummary") [126 ms]
+  Passed QTKD.IntegrationTests.SubmitContractApiTests.TC05_SubmitMissingOneRequiredItem_NamesThatItem(withContent: True, withAttachment: False, expectedMissing: "AttachmentFileName") [21 ms]
+  Passed QTKD.IntegrationTests.SubmitContractApiTests.TC05_SubmitWhenCustomerBecameInactive_IsRejected_AndStaysDraft [32 ms]
+  Passed QTKD.IntegrationTests.SubmitContractApiTests.TC08_ConcurrentSubmits_CreateExactlyOneHandOff [235 ms]
+  Passed QTKD.IntegrationTests.SubmitContractApiTests.DemoFlow_CustomerToContractToSubmit [55 ms]
+  Passed QTKD.IntegrationTests.SubmitContractApiTests.SubmitUnknownContract_Returns404 [5 ms]
+  Passed QTKD.IntegrationTests.SubmitContractApiTests.TC06_SubmitValidDraft_MovesToPendingApproval_AndRecordsHandOff [53 ms]
+  Passed QTKD.IntegrationTests.SubmitContractApiTests.TC08_SubmitSameContractTwice_SecondIsRejected_AndOnlyOneHandOffExists [41 ms]
+  Passed QTKD.IntegrationTests.PricingApiTests.CreatePriceListAndItem_AreStoredAndLinked [143 ms]
+  Passed QTKD.IntegrationTests.PricingApiTests.CreatePriceList_WithoutName_IsRejected [6 ms]
+  Passed QTKD.IntegrationTests.PricingApiTests.AddPriceItem_WithNonPositiveUnitPrice_IsRejected(unitPrice: 0) [41 ms]
+  Passed QTKD.IntegrationTests.PricingApiTests.AddPriceItem_WithNonPositiveUnitPrice_IsRejected(unitPrice: -1) [10 ms]
+  Passed QTKD.IntegrationTests.PricingApiTests.GetSeedPriceListItems_ReturnsTwoItems [39 ms]
+  Passed QTKD.IntegrationTests.PricingApiTests.AddPriceItem_ToUnknownPriceList_Returns404 [5 ms]
+  Passed QTKD.IntegrationTests.PricingApiTests.AddDuplicateServiceCode_InSamePriceList_IsRejected [21 ms]
+  Passed QTKD.IntegrationTests.CustomerApiTests.TC02_CreateCustomerWithInvalidStatus_IsRejected(status: "") [3 ms]
+  Passed QTKD.IntegrationTests.CustomerApiTests.TC02_CreateCustomerWithInvalidStatus_IsRejected(status: "Pending") [2 ms]
+  Passed QTKD.IntegrationTests.CustomerApiTests.TC02_CreateCustomerWithoutName_IsRejectedWithMessage_AndNothingIsStored(body: "{\"name\":\"   \",\"status\":\"Active\"}") [8 ms]
+  Passed QTKD.IntegrationTests.CustomerApiTests.TC02_CreateCustomerWithoutName_IsRejectedWithMessage_AndNothingIsStored(body: "{\"name\":\"\",\"status\":\"Active\"}") [6 ms]
+  Passed QTKD.IntegrationTests.CustomerApiTests.TC02_CreateCustomerWithoutName_IsRejectedWithMessage_AndNothingIsStored(body: "{\"name\":null,\"status\":\"Active\"}") [6 ms]
+  Passed QTKD.IntegrationTests.CustomerApiTests.TC02_CreateCustomerWithoutName_IsRejectedWithMessage_AndNothingIsStored(body: "{\"status\":\"Active\"}") [4 ms]
+  Passed QTKD.IntegrationTests.CustomerApiTests.TC02_CreateCustomerWithNameOver200Characters_IsRejected [3 ms]
+  Passed QTKD.IntegrationTests.CustomerApiTests.GetUnknownCustomer_Returns404WithErrorBody [19 ms]
+  Passed QTKD.IntegrationTests.CustomerApiTests.UpdateCustomer_ChangesStoredValues [16 ms]
+  Passed QTKD.IntegrationTests.CustomerApiTests.UpdateCustomerWithInvalidData_IsRejected_AndStoredValuesStay [20 ms]
+  Passed QTKD.IntegrationTests.CustomerApiTests.CreateCustomerWithInvalidJson_ReturnsSharedErrorShape [11 ms]
+  Passed QTKD.IntegrationTests.CustomerApiTests.TC01_CreateValidCustomer_IsStoredAndCanBeReadBack [21 ms]
+  Passed QTKD.IntegrationTests.CustomerApiTests.TC01_CreateCustomerWithoutStatus_DefaultsToActive [9 ms]
+  Passed QTKD.IntegrationTests.CustomerApiTests.GetCustomers_ContainsSeedData [17 ms]
+  Passed QTKD.IntegrationTests.ContractApiTests.TC07_UpdateDraftContractToApproved_DoesNotChangeStatus [26 ms]
+  Passed QTKD.IntegrationTests.ContractApiTests.GetUnknownContract_Returns404WithErrorBody [13 ms]
+  Passed QTKD.IntegrationTests.ContractApiTests.CreateContract_WithDuplicateContractNo_IsRejected [13 ms]
+  Passed QTKD.IntegrationTests.ContractApiTests.CreateContract_StartsInDraft_AndIsStored [19 ms]
+  Passed QTKD.IntegrationTests.ContractApiTests.TC03_UpdateDraftContract_WithValidData_Succeeds_AndIsStored [33 ms]
+  Passed QTKD.IntegrationTests.ContractApiTests.CreateContract_WithEndDateBeforeStartDate_IsRejected [15 ms]
+  Passed QTKD.IntegrationTests.ContractApiTests.TC03_UpdateDraftContract_WithInvalidData_IsRejected_AndDataStays [19 ms]
+  Passed QTKD.IntegrationTests.ContractApiTests.TC07_CreateContractWithApprovedStatus_StillStartsInDraft [18 ms]
+  Passed QTKD.IntegrationTests.ContractApiTests.UpdateUnknownContract_Returns404 [5 ms]
+  Passed QTKD.IntegrationTests.ContractApiTests.GetSeedContract_ReturnsDraftForMinhPhat [4 ms]
+[xUnit.net 00:00:04.95]   Finished:    QTKD.IntegrationTests
+  Passed QTKD.IntegrationTests.ContractApiTests.CreateContract_ForInactiveCustomer_IsRejected [10 ms]
+  Passed QTKD.IntegrationTests.ContractApiTests.TC04_UpdatePendingApprovalContract_IsRejected_AndDataStays [23 ms]
+  Passed QTKD.IntegrationTests.ContractApiTests.CreateContractWithInvalidDate_ReturnsSharedErrorShape [4 ms]
+  Passed QTKD.IntegrationTests.ConcurrencyRegressionTests.ConcurrentCreatesWithSameContractNo_NeverReturn500_AndStoreOneContract [36 ms]
+  Passed QTKD.IntegrationTests.ConcurrencyRegressionTests.ConcurrentUpdateAndSubmit_NeverBreakCtr01OrCtr02 [228 ms]
+  Passed QTKD.IntegrationTests.ConcurrencyRegressionTests.ConcurrentAddsOfSameServiceCode_NeverReturn500_AndStoreOneItem [29 ms]
+Results File: E:\Homework\PTUDHTTT\QTKD\source\docs\test-results\week07-IntegrationTests.trx
+
+Test Run Successful.
+Total tests: 46
+     Passed: 46
+ Total time: 5.5831 Seconds

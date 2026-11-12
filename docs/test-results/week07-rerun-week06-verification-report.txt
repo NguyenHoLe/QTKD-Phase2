@@ -1,0 +1,113 @@
+﻿# QTKD Week 06 - API verification report
+Started: 2026-11-12T13:19:19.5203539+07:00
+Base URL: http://localhost:5209
+
+## 0. Week 05 foundation and API availability
+  PASS  GET customer collection [expected HTTP 200, received 200]
+  PASS  Customer collection is a JSON array
+  PASS  GET contract collection [expected HTTP 200, received 200]
+  PASS  Contract collection is a JSON array
+  PASS  GET price-list collection [expected HTTP 200, received 200]
+  PASS  Price-list collection is a JSON array
+  PASS  Unknown Customer returns 404 [expected HTTP 404, received 404]
+  PASS  Unknown Contract returns 404 [expected HTTP 404, received 404]
+  PASS  Unknown PriceList returns 404 [expected HTTP 404, received 404]
+
+## 1. Customer - required fields, status validation, create/read/update
+  PASS  Create Active Customer [expected HTTP 201, received 201]
+  PASS  Created Customer has a positive id
+  PASS  Created Customer is Active
+  PASS  Omitted status uses Active default [expected HTTP 201, received 201]
+  PASS  Default status persisted as Active
+  PASS  Create Inactive Customer [expected HTTP 201, received 201]
+  PASS  Customer status accepts case-insensitive Active [expected HTTP 201, received 201]
+  PASS  Case-insensitive status is normalized to Active
+  PASS  Read created Customer [expected HTTP 200, received 200]
+  PASS  Customer detail returns the created name
+  PASS  Customer collection contains created Customer
+  PASS  Update Customer [expected HTTP 200, received 200]
+  PASS  Customer update returns changed name
+  PASS  Customer update rejects invalid status [expected HTTP 400, received 400]
+  PASS  Read Customer after rejected update [expected HTTP 200, received 200]
+  PASS  Rejected Customer update leaves saved name unchanged
+  PASS  Update unknown Customer returns 404 [expected HTTP 404, received 404]
+  PASS  Create Customer without name returns 400 [expected HTTP 400, received 400]
+  PASS  Create Customer with blank name returns 400 [expected HTTP 400, received 400]
+  PASS  Create Customer with 201-character name returns 400 [expected HTTP 400, received 400]
+  PASS  Reject Customer status '' [expected HTTP 400, received 400]
+  PASS  Reject Customer status 'Unknown' [expected HTTP 400, received 400]
+
+## 2. Contract - validation, Draft-only editing, submit workflow
+  PASS  Create Contract Draft [expected HTTP 201, received 201]
+  PASS  New Contract starts in Draft despite supplied status
+  PASS  Contract response includes linked Customer name
+  PASS  Read created Contract [expected HTTP 200, received 200]
+  PASS  Contract detail retains ContractNo
+  PASS  Contract collection contains created Contract
+  PASS  Reject Contract: missing ContractNo [expected HTTP 400, received 400]
+  PASS  Reject Contract: blank ContractNo [expected HTTP 400, received 400]
+  PASS  Reject Contract: ContractNo over 50 chars [expected HTTP 400, received 400]
+  PASS  Reject Contract: nonexistent Customer [expected HTTP 400, received 400]
+  PASS  Reject Contract: inactive Customer [expected HTTP 400, received 400]
+  PASS  Reject Contract: zero Customer id [expected HTTP 400, received 400]
+  PASS  Reject Contract: negative Customer id [expected HTTP 400, received 400]
+  PASS  Reject Contract: missing StartDate [expected HTTP 400, received 400]
+  PASS  Reject Contract: missing EndDate [expected HTTP 400, received 400]
+  PASS  Reject Contract: EndDate before StartDate [expected HTTP 400, received 400]
+  PASS  Reject Contract: ContentSummary over 4000 chars [expected HTTP 400, received 400]
+  PASS  Reject Contract: AttachmentFileName over 255 chars [expected HTTP 400, received 400]
+  PASS  Reject Contract: duplicate ContractNo [expected HTTP 400, received 400]
+  PASS  Submit incomplete Draft returns 422 [expected HTTP 422, received 422]
+  PASS  Incomplete submit returns expected validation code
+  PASS  Incomplete submit identifies missing requirements
+  PASS  Read after rejected submit [expected HTTP 200, received 200]
+  PASS  Rejected submit leaves Contract in Draft
+  PASS  Rejected submit leaves submission timestamp empty
+  PASS  Update Draft with content but no attachment [expected HTTP 200, received 200]
+  PASS  Submit without attachment returns 422 [expected HTTP 422, received 422]
+  PASS  Attachment-only validation names missing attachment
+  PASS  Update Draft with attachment but no content [expected HTTP 200, received 200]
+  PASS  Submit without content returns 422 [expected HTTP 422, received 422]
+  PASS  Content-only validation names missing content
+  PASS  Update Draft with content and attachment metadata [expected HTTP 200, received 200]
+  PASS  Completed Contract remains Draft before submit
+  PASS  Submit eligible Draft [expected HTTP 200, received 200]
+  PASS  Successful submit changes status to PendingApproval
+  PASS  Successful submit returns UTC timestamp
+  PASS  Read submitted Contract [expected HTTP 200, received 200]
+  PASS  GET confirms PendingApproval persisted
+  PASS  Duplicate submit returns 409 [expected HTTP 409, received 409]
+  PASS  Update after submit returns 409 [expected HTTP 409, received 409]
+  PASS  Submit unknown Contract returns 404 [expected HTTP 404, received 404]
+
+## 3. Pricing - PriceList and PriceItem validation / duplicate prevention
+  PASS  Create PriceList [expected HTTP 201, received 201]
+  PASS  Created PriceList has positive id
+  PASS  Read created PriceList [expected HTTP 200, received 200]
+  PASS  PriceList detail returns its name
+  PASS  PriceList collection contains created PriceList
+  PASS  PriceList without name returns 400 [expected HTTP 400, received 400]
+  PASS  PriceList with blank name returns 400 [expected HTTP 400, received 400]
+  PASS  PriceList name over 200 chars returns 400 [expected HTTP 400, received 400]
+  PASS  PriceList with missing date returns 400 [expected HTTP 400, received 400]
+  PASS  Read items from unknown PriceList returns 404 [expected HTTP 404, received 404]
+  PASS  Add item to unknown PriceList returns 404 [expected HTTP 404, received 404]
+  PASS  Reject PriceItem: blank ServiceCode [expected HTTP 400, received 400]
+  PASS  Reject PriceItem: missing ServiceCode [expected HTTP 400, received 400]
+  PASS  Reject PriceItem: ServiceCode over 100 chars [expected HTTP 400, received 400]
+  PASS  Reject PriceItem: zero UnitPrice [expected HTTP 400, received 400]
+  PASS  Reject PriceItem: negative UnitPrice [expected HTTP 400, received 400]
+  PASS  Create valid PriceItem [expected HTTP 201, received 201]
+  PASS  PriceItem response preserves ServiceCode
+  PASS  PriceItem response preserves positive UnitPrice
+  PASS  Duplicate ServiceCode in same PriceList returns 409 [expected HTTP 409, received 409]
+  PASS  Read PriceList items [expected HTTP 200, received 200]
+  PASS  PriceItem appears in read-back list
+
+## 4. Summary
+
+## Result
+PASS: 94
+FAIL: 0
+Total checks: 94
+OVERALL: PASS

@@ -1,4 +1,4 @@
-# Solution architecture — QTKD, Tuần 05–06
+# Solution architecture — QTKD, Tuần 05–07
 
 ```mermaid
 flowchart LR
@@ -17,3 +17,17 @@ Controllers nhận HTTP request và trả HTTP response; mọi lỗi đều dùn
 - `CanTransition` — CTR-03: bảng chuyển trạng thái lấy từ sơ đồ máy trạng thái Phase 1; Draft → Approved không có trong bảng nên bị từ chối.
 
 `ContractService` gọi các quy tắc này trước khi lưu và chỉ thực hiện chuyển Draft → PendingApproval. `QtkdDbContext` dùng Entity Framework Core để đọc/ghi các entity trong PostgreSQL; `Contract.Version` (cột hệ thống `xmin`) là concurrency token để hai request đồng thời không ghi đè nhau.
+
+## Kiểm thử (tuần 07)
+
+```mermaid
+flowchart LR
+    Unit["QTKD.UnitTests<br/>Ctr01 · Ctr02 · Ctr03<br/>ApiErrorFormat"] --> Rules["Domain/ContractRules<br/>Common/ApiErrorCodes"]
+    Integration["QTKD.IntegrationTests<br/>WebApplicationFactory&lt;Program&gt;"] -->|HTTP trong bộ nhớ| Api["QTKD.Api<br/>Controllers → Services → DbContext"]
+    Api --> TestDb[("PostgreSQL<br/>qtkd_test")]
+    Integration -->|"QtkdDbContext riêng:<br/>đọc lại dữ liệu đã lưu"| TestDb
+```
+
+- **Unit test** kiểm tra quy tắc nghiệp vụ, không cần database.
+- **Integration test** chạy toàn bộ API thật trên database kiểm thử `qtkd_test`, được xóa và tạo lại từ migration mỗi lần chạy. Test đối chiếu cả response lẫn dữ liệu thật trong database.
+- Database phát triển `qtkd` không bị test sử dụng. Chi tiết: [week-07-testing.md](week-07-testing.md).

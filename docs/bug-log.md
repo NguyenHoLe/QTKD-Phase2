@@ -69,7 +69,7 @@ Lỗi bind dữ liệu do `[ApiController]` tự tạo trước khi vào control
 
 **Cách phát hiện**
 
-Lỗi này được phát hiện khi đọc code, **chưa tái hiện được trên phiên bản cũ**. Kịch bản phụ thuộc thời điểm hai request xen kẽ nhau.
+Ban đầu lỗi được phát hiện khi đọc code. Ở tuần 07, integration test `ConcurrentUpdateAndSubmit_NeverBreakCtr01OrCtr02` đã **tái hiện được lỗi trên mã nguồn trước khi sửa** (commit `19012a5`), ngay vòng đầu tiên: `Round 0: both the edit and the submit succeeded.` Nghĩa là cùng một hợp đồng vừa được gửi trình duyệt, vừa bị sửa nội dung.
 
 **Kịch bản**
 
@@ -95,3 +95,16 @@ Chạy 20 lần `PUT` (xóa nội dung) song song với `submit` trên 20 hợp 
 
 - `docs/demo/verify-week06.ps1`: **94/94 PASS**.
 - `docs/demo/demo-week06.ps1`: luồng đầy đủ đạt (`422` → `200` → `PendingApproval` → `409`).
+
+## Test tự động hồi quy (tuần 07)
+
+Mỗi lỗi có integration test tương ứng trong `tests/QTKD.IntegrationTests`. Cùng bộ test được chạy trên hai phiên bản mã nguồn:
+
+| Lỗi | Test | Trên `19012a5` (trước khi sửa) | Sau khi sửa |
+|---|---|---|---|
+| BUG-01 | `ConcurrentCreatesWithSameContractNo_NeverReturn500_AndStoreOneContract` | Lỗi — `23505 ... "IX_Contracts_ContractNo"` | Đạt |
+| BUG-01 | `ConcurrentAddsOfSameServiceCode_NeverReturn500_AndStoreOneItem` | Lỗi — `23505 ... "PK_PriceItems"` | Đạt |
+| BUG-02 | `CreateCustomerWithInvalidJson_ReturnsSharedErrorShape`, `CreateContractWithInvalidDate_ReturnsSharedErrorShape`, `GetUnknownCustomer_Returns404WithErrorBody`, `GetUnknownContract_Returns404WithErrorBody` | Lỗi (4 test) | Đạt |
+| BUG-03 | `ConcurrentUpdateAndSubmit_NeverBreakCtr01OrCtr02` | Lỗi — `Round 0: both the edit and the submit succeeded.` | Đạt |
+
+Tổng cộng trên bản cũ: 7 test lỗi, 39 test đạt. Sau khi sửa: 46/46 đạt. Chi tiết ở [week-07-testing.md](week-07-testing.md).
