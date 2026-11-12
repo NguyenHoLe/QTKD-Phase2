@@ -2,6 +2,37 @@
 
 Base URL: `http://localhost:<port>` (thay `<port>` bằng cổng được `dotnet run` in ra). API cũng hiển thị trong Swagger UI tại `/swagger` khi chạy Development.
 
+## US03 — Gửi hợp đồng trình duyệt: điều kiện, trạng thái, trường hợp từ chối
+
+Theo US03, UC-CON-03, AC01–AC05 và CTR-01..03 của Phase 1. Endpoint: `POST /api/contracts/{id}/submit`, không cần body.
+
+**Trạng thái trước → sau:** chỉ `Draft` → `PendingApproval` (Chờ phê duyệt). Thao tác này không bao giờ chuyển sang `Approved` (CTR-03). Các chuyển trạng thái khác thuộc User Story phê duyệt sau.
+
+**Điều kiện để gửi thành công**, kiểm tra theo đúng thứ tự trong `ContractService.SubmitAsync`:
+
+1. Hợp đồng tồn tại.
+2. Hợp đồng đang ở `Draft` (AC02).
+3. Hợp đồng chưa có lần gửi nào (AC05).
+4. Đạt CTR-02 (AC03):
+   - Customer tồn tại và `Active`;
+   - `StartDate`, `EndDate` có giá trị và `EndDate >= StartDate`;
+   - có `ContentSummary` *(giả định demo)*;
+   - có `AttachmentFileName` *(giả định demo)*.
+
+**Kết quả thành công (AC04):** trong cùng một transaction, hợp đồng đổi sang `PendingApproval` và tạo một bản ghi `ContractSubmission` (mô phỏng "khởi tạo quy trình phê duyệt" kèm thời điểm gửi). API trả `200`.
+
+**Trường hợp phải từ chối** (hợp đồng và bảng `ContractSubmission` không thay đổi):
+
+| Trường hợp | HTTP | `code` |
+|---|---|---|
+| Không tìm thấy hợp đồng | `404` | `not_found` |
+| Hợp đồng không ở `Draft` (đã gửi, đã duyệt...) | `409` | `conflict` |
+| Gửi lặp, hoặc hai request gửi cùng lúc (chỉ một request thắng) | `409` | `conflict` |
+| Không đạt CTR-02; `details` liệt kê **mọi** điều kiện chưa đạt | `422` | `submission_validation_failed` |
+| Không có quyền (AC01) | — | Chưa triển khai: solution chưa có đăng nhập/phân quyền |
+
+**Mô phỏng và giới hạn:** chưa có quy trình Approval đầy đủ. "Gửi trình duyệt" được mô phỏng bằng một bản ghi `ContractSubmission` cho mỗi hợp đồng, chưa có người duyệt, các bước duyệt hay thời hạn xử lý. Xem thêm mục *Giả định và giới hạn demo* bên dưới.
+
 ## Danh sách API
 
 | Method | Endpoint | Hành vi | Thành công |
