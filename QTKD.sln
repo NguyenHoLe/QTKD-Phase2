@@ -5,6 +5,12 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QTKD.Api", "QTKD.Api\QTKD.Api.csproj", "{12052848-A714-4FCE-8E6E-6AAC25A55AF8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QTKD.UnitTests", "tests\QTKD.UnitTests\QTKD.UnitTests.csproj", "{560CEDAA-D9AA-4B81-87ED-15489CF89DFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QTKD.IntegrationTests", "tests\QTKD.IntegrationTests\QTKD.IntegrationTests.csproj", "{AA0CF531-16F3-4CEC-86A2-D05C00A58439}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,8 +33,36 @@ Global
 		{12052848-A714-4FCE-8E6E-6AAC25A55AF8}.Release|x64.Build.0 = Release|Any CPU
 		{12052848-A714-4FCE-8E6E-6AAC25A55AF8}.Release|x86.ActiveCfg = Release|Any CPU
 		{12052848-A714-4FCE-8E6E-6AAC25A55AF8}.Release|x86.Build.0 = Release|Any CPU
+		{560CEDAA-D9AA-4B81-87ED-15489CF89DFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{560CEDAA-D9AA-4B81-87ED-15489CF89DFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{560CEDAA-D9AA-4B81-87ED-15489CF89DFF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{560CEDAA-D9AA-4B81-87ED-15489CF89DFF}.Debug|x64.Build.0 = Debug|Any CPU
+		{560CEDAA-D9AA-4B81-87ED-15489CF89DFF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{560CEDAA-D9AA-4B81-87ED-15489CF89DFF}.Debug|x86.Build.0 = Debug|Any CPU
+		{560CEDAA-D9AA-4B81-87ED-15489CF89DFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{560CEDAA-D9AA-4B81-87ED-15489CF89DFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{560CEDAA-D9AA-4B81-87ED-15489CF89DFF}.Release|x64.ActiveCfg = Release|Any CPU
+		{560CEDAA-D9AA-4B81-87ED-15489CF89DFF}.Release|x64.Build.0 = Release|Any CPU
+		{560CEDAA-D9AA-4B81-87ED-15489CF89DFF}.Release|x86.ActiveCfg = Release|Any CPU
+		{560CEDAA-D9AA-4B81-87ED-15489CF89DFF}.Release|x86.Build.0 = Release|Any CPU
+		{AA0CF531-16F3-4CEC-86A2-D05C00A58439}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA0CF531-16F3-4CEC-86A2-D05C00A58439}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA0CF531-16F3-4CEC-86A2-D05C00A58439}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AA0CF531-16F3-4CEC-86A2-D05C00A58439}.Debug|x64.Build.0 = Debug|Any CPU
+		{AA0CF531-16F3-4CEC-86A2-D05C00A58439}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AA0CF531-16F3-4CEC-86A2-D05C00A58439}.Debug|x86.Build.0 = Debug|Any CPU
+		{AA0CF531-16F3-4CEC-86A2-D05C00A58439}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA0CF531-16F3-4CEC-86A2-D05C00A58439}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA0CF531-16F3-4CEC-86A2-D05C00A58439}.Release|x64.ActiveCfg = Release|Any CPU
+		{AA0CF531-16F3-4CEC-86A2-D05C00A58439}.Release|x64.Build.0 = Release|Any CPU
+		{AA0CF531-16F3-4CEC-86A2-D05C00A58439}.Release|x86.ActiveCfg = Release|Any CPU
+		{AA0CF531-16F3-4CEC-86A2-D05C00A58439}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{560CEDAA-D9AA-4B81-87ED-15489CF89DFF} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{AA0CF531-16F3-4CEC-86A2-D05C00A58439} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal

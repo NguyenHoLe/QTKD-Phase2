@@ -15,3 +15,6 @@
 # Assignment source PDFs stay outside the source repository
 /TH_Phase2_QTKD.pdf
 /Tuan_02_QTKD_Req.pdf
+
+# Test results produced by dotnet test without --results-directory
+**/TestResults/
