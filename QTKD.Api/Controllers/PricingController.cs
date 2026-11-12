@@ -18,13 +18,13 @@ public class PricingController(PricingService pricingService) : ApiControllerBas
 
     [HttpGet("{id:int}")]
     [ProducesResponseType<PriceListResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(QTKD.Api.Common.ApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PriceListResponse>> GetPriceListById(
         int id,
         CancellationToken cancellationToken)
     {
         var priceList = await pricingService.GetPriceListByIdAsync(id, cancellationToken);
-        return priceList is null ? NotFound() : Ok(priceList);
+        return priceList is null ? NotFoundError("PriceList", id) : Ok(priceList);
     }
 
     [HttpPost]

@@ -63,7 +63,7 @@ public sealed class CustomerService(QtkdDbContext dbContext)
         if (customer is null)
         {
             return OperationResult<CustomerResponse>.Failure(
-                "not_found", $"Customer {id} was not found.");
+                ApiErrorCodes.NotFound, $"Customer {id} was not found.");
         }
 
         var validationError = Validate(request);
@@ -90,8 +90,8 @@ public sealed class CustomerService(QtkdDbContext dbContext)
             errors.Add("Name must be 200 characters or fewer.");
         }
 
-        if (!string.Equals(request.Status, "Active", StringComparison.OrdinalIgnoreCase) &&
-            !string.Equals(request.Status, "Inactive", StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(request.Status, CustomerStatuses.Active, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(request.Status, CustomerStatuses.Inactive, StringComparison.OrdinalIgnoreCase))
         {
             errors.Add("Status must be Active or Inactive.");
         }
@@ -99,13 +99,13 @@ public sealed class CustomerService(QtkdDbContext dbContext)
         return errors.Count == 0
             ? null
             : OperationResult<CustomerResponse>.Failure(
-                "validation_failed", "Customer data is invalid.", errors);
+                ApiErrorCodes.ValidationFailed, "Customer data is invalid.", errors);
     }
 
     private static string NormalizeStatus(string? status) =>
-        string.Equals(status, "Inactive", StringComparison.OrdinalIgnoreCase)
-            ? "Inactive"
-            : "Active";
+        string.Equals(status, CustomerStatuses.Inactive, StringComparison.OrdinalIgnoreCase)
+            ? CustomerStatuses.Inactive
+            : CustomerStatuses.Active;
 
     private static CustomerResponse ToResponse(Customer customer) =>
         new(customer.Id, customer.Name, customer.Status);

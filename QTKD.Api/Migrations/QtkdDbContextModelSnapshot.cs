@@ -17,7 +17,7 @@ namespace QTKD.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.14")
+                .HasAnnotation("ProductVersion", "10.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -55,6 +55,12 @@ namespace QTKD.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<uint>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ContractNo")
@@ -72,7 +78,8 @@ namespace QTKD.Api.Migrations
                             CustomerId = 1,
                             EndDate = new DateOnly(2027, 9, 30),
                             StartDate = new DateOnly(2026, 10, 1),
-                            Status = "Draft"
+                            Status = "Draft",
+                            Version = 0u
                         });
                 });
 

@@ -21,13 +21,13 @@ public class QtkdDbContext(DbContextOptions<QtkdDbContext> options)
             {
                 Id = 1,
                 Name = "Công ty Minh Phát",
-                Status = "Active"
+                Status = CustomerStatuses.Active
             },
             new Customer
             {
                 Id = 2,
                 Name = "Công ty An Bình",
-                Status = "Active"
+                Status = CustomerStatuses.Active
             });
 
         modelBuilder.Entity<Contract>()
@@ -39,6 +39,10 @@ public class QtkdDbContext(DbContextOptions<QtkdDbContext> options)
         modelBuilder.Entity<Contract>()
             .HasIndex(contract => contract.ContractNo)
             .IsUnique();
+
+        modelBuilder.Entity<Contract>()
+            .Property(contract => contract.Version)
+            .IsRowVersion();
 
         modelBuilder.Entity<Contract>()
             .Property(contract => contract.ContentSummary)
@@ -65,7 +69,7 @@ public class QtkdDbContext(DbContextOptions<QtkdDbContext> options)
                 CustomerId = 1,
                 StartDate = new DateOnly(2026, 10, 1),
                 EndDate = new DateOnly(2027, 9, 30),
-                Status = "Draft"
+                Status = ContractStatuses.Draft
             });
 
         modelBuilder.Entity<PriceList>()

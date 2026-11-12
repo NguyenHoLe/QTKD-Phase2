@@ -1,6 +1,49 @@
-@QTKD.Api_HostAddress = http://localhost:5209
+@host = http://localhost:5209
 
-GET {{QTKD.Api_HostAddress}}/weatherforecast/
+### Danh sách Customer
+GET {{host}}/api/customers
 Accept: application/json
 
-###
+### Tạo Customer
+POST {{host}}/api/customers
+Content-Type: application/json
+
+{
+  "name": "Công ty Demo",
+  "status": "Active"
+}
+
+### Xem Contract mẫu HD-2026-018
+GET {{host}}/api/contracts/1
+Accept: application/json
+
+### Tạo Contract Draft (thiếu nội dung/tệp → Submit sẽ bị 422)
+POST {{host}}/api/contracts
+Content-Type: application/json
+
+{
+  "contractNo": "HD-DEMO-HTTP-01",
+  "customerId": 1,
+  "startDate": "2026-11-01",
+  "endDate": "2027-10-31"
+}
+
+### Bổ sung nội dung/tệp (thay {id} bằng id vừa tạo)
+PUT {{host}}/api/contracts/{id}
+Content-Type: application/json
+
+{
+  "contractNo": "HD-DEMO-HTTP-01",
+  "customerId": 1,
+  "startDate": "2026-11-01",
+  "endDate": "2027-10-31",
+  "contentSummary": "Cung cấp dịch vụ cảng theo phạm vi đã thống nhất.",
+  "attachmentFileName": "HD-DEMO-HTTP-01.pdf"
+}
+
+### Gửi trình duyệt (thay {id})
+POST {{host}}/api/contracts/{id}/submit
+
+### Danh sách PriceItem của bảng giá mẫu
+GET {{host}}/api/price-lists/1/items
+Accept: application/json

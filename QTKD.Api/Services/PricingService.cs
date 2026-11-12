@@ -58,7 +58,7 @@ public sealed class PricingService(QtkdDbContext dbContext)
         if (errors.Count > 0)
         {
             return OperationResult<PriceListResponse>.Failure(
-                "validation_failed", "PriceList data is invalid.", errors);
+                ApiErrorCodes.ValidationFailed, "PriceList data is invalid.", errors);
         }
 
         var priceList = new PriceList
@@ -83,7 +83,7 @@ public sealed class PricingService(QtkdDbContext dbContext)
         if (!listExists)
         {
             return OperationResult<List<PriceItemResponse>>.Failure(
-                "not_found", $"PriceList {priceListId} was not found.");
+                ApiErrorCodes.NotFound, $"PriceList {priceListId} was not found.");
         }
 
         var items = await dbContext.PriceItems
@@ -125,13 +125,13 @@ public sealed class PricingService(QtkdDbContext dbContext)
         if (priceList is null)
         {
             return OperationResult<PriceItemResponse>.Failure(
-                "not_found", $"PriceList {priceListId} was not found.");
+                ApiErrorCodes.NotFound, $"PriceList {priceListId} was not found.");
         }
 
         if (errors.Count > 0)
         {
             return OperationResult<PriceItemResponse>.Failure(
-                "validation_failed", "PriceItem data is invalid.", errors);
+                ApiErrorCodes.ValidationFailed, "PriceItem data is invalid.", errors);
         }
 
         var exists = await dbContext.PriceItems.AnyAsync(
@@ -140,7 +140,7 @@ public sealed class PricingService(QtkdDbContext dbContext)
         if (exists)
         {
             return OperationResult<PriceItemResponse>.Failure(
-                "conflict", $"ServiceCode {serviceCode} already exists in PriceList {priceListId}.");
+                ApiErrorCodes.Conflict, $"ServiceCode {serviceCode} already exists in PriceList {priceListId}.");
         }
 
         var priceItem = new PriceItem
@@ -151,9 +151,24 @@ public sealed class PricingService(QtkdDbContext dbContext)
             PriceList = priceList
         };
         dbContext.PriceItems.Add(priceItem);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException exception) when (exception.IsUniqueViolation())
+        {
+            // A concurrent request added the same ServiceCode after the check above;
+            // the (PriceListId, ServiceCode) primary key rejected this insert.
+            return DuplicateServiceCode(serviceCode!, priceListId);
+        }
 
         return OperationResult<PriceItemResponse>.Success(
             new PriceItemResponse(priceItem.PriceListId, priceItem.ServiceCode, priceItem.UnitPrice));
     }
+
+    private static OperationResult<PriceItemResponse> DuplicateServiceCode(
+        string serviceCode,
+        int priceListId) =>
+        OperationResult<PriceItemResponse>.Failure(
+            ApiErrorCodes.Conflict, $"ServiceCode {serviceCode} already exists in PriceList {priceListId}.");
 }

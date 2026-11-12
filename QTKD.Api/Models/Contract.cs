@@ -18,6 +18,13 @@ public class Contract
 
     public string Status { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Optimistic concurrency token mapped to PostgreSQL's system column <c>xmin</c>.
+    /// If another request changes the row after it was read, SaveChanges fails instead of
+    /// silently overwriting (e.g. an edit racing with a submit).
+    /// </summary>
+    public uint Version { get; set; }
+
     public Customer? Customer { get; set; }
 
     public ContractSubmission? Submission { get; set; }

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using QTKD.Api.Common;
 using QTKD.Api.Data;
+using QTKD.Api.Domain;
 using QTKD.Api.Dtos;
 using QTKD.Api.Models;
 
@@ -8,6 +9,8 @@ namespace QTKD.Api.Services;
 
 public sealed class ContractService(QtkdDbContext dbContext)
 {
+    private const string DuplicateContractNoMessage = "ContractNo must be unique.";
+
     public async Task<List<ContractResponse>> GetAllAsync(CancellationToken cancellationToken)
     {
         var contracts = await dbContext.Contracts
@@ -52,11 +55,22 @@ public sealed class ContractService(QtkdDbContext dbContext)
             EndDate = request.EndDate,
             ContentSummary = NormalizeOptional(request.ContentSummary),
             AttachmentFileName = NormalizeOptional(request.AttachmentFileName),
+            // CTR-03: every new contract starts in Draft; the request has no Status field.
             Status = ContractStatuses.Draft
         };
 
         dbContext.Contracts.Add(contract);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException exception) when (exception.IsUniqueViolation())
+        {
+            // A concurrent request inserted the same ContractNo after our duplicate check;
+            // the unique index IX_Contracts_ContractNo rejected this insert.
+            return DuplicateContractNo();
+        }
+
         return OperationResult<ContractResponse>.Success(ToResponse(contract));
     }
 
@@ -72,13 +86,14 @@ public sealed class ContractService(QtkdDbContext dbContext)
         if (contract is null)
         {
             return OperationResult<ContractResponse>.Failure(
-                "not_found", $"Contract {id} was not found.");
+                ApiErrorCodes.NotFound, $"Contract {id} was not found.");
         }
 
-        if (!ContractStatuses.CanEdit(contract.Status))
+        // CTR-01
+        if (!ContractRules.CanEdit(contract.Status))
         {
             return OperationResult<ContractResponse>.Failure(
-                "conflict",
+                ApiErrorCodes.Conflict,
                 $"Contract {id} cannot be edited while its status is {contract.Status}. CTR-01 allows edits only in Draft or RevisionRequested.");
         }
 
@@ -96,7 +111,23 @@ public sealed class ContractService(QtkdDbContext dbContext)
         contract.EndDate = request.EndDate;
         contract.ContentSummary = NormalizeOptional(request.ContentSummary);
         contract.AttachmentFileName = NormalizeOptional(request.AttachmentFileName);
-        await dbContext.SaveChangesAsync(cancellationToken);
+
+        try
+        {
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // The row changed after it was read (e.g. it was submitted meanwhile),
+            // so the CTR-01 check above is no longer valid. Nothing was saved.
+            return OperationResult<ContractResponse>.Failure(
+                ApiErrorCodes.Conflict,
+                $"Contract {id} was changed by another request (for example it was submitted). No changes were saved; reload the contract and try again.");
+        }
+        catch (DbUpdateException exception) when (exception.IsUniqueViolation())
+        {
+            return DuplicateContractNo();
+        }
 
         return OperationResult<ContractResponse>.Success(ToResponse(contract));
     }
@@ -112,27 +143,30 @@ public sealed class ContractService(QtkdDbContext dbContext)
         if (contract is null)
         {
             return OperationResult<ContractSubmissionResponse>.Failure(
-                "not_found", $"Contract {id} was not found.");
+                ApiErrorCodes.NotFound, $"Contract {id} was not found.");
         }
 
-        if (!string.Equals(contract.Status, ContractStatuses.Draft, StringComparison.OrdinalIgnoreCase))
+        // AC02 + CTR-03: Submit is only the Draft → PendingApproval transition.
+        if (!ContractRules.CanTransition(contract.Status, ContractStatuses.PendingApproval))
         {
             return OperationResult<ContractSubmissionResponse>.Failure(
-                "conflict",
+                ApiErrorCodes.Conflict,
                 $"Contract {id} cannot be submitted from status {contract.Status}. Only Draft contracts can be submitted.");
         }
 
+        // AC05 / A4: never create a second hand-off for the same contract.
         if (contract.Submission is not null)
         {
             return OperationResult<ContractSubmissionResponse>.Failure(
-                "conflict", $"Contract {id} already has a submission record.");
+                ApiErrorCodes.Conflict, $"Contract {id} already has a submission record.");
         }
 
-        var errors = GetSubmissionErrors(contract);
+        // AC03 / CTR-02
+        var errors = ContractRules.GetSubmissionErrors(contract);
         if (errors.Count > 0)
         {
             return OperationResult<ContractSubmissionResponse>.Failure(
-                "submission_validation_failed",
+                ApiErrorCodes.SubmissionValidationFailed,
                 "Contract does not meet CTR-02 submission requirements. No changes were saved.",
                 errors);
         }
@@ -147,15 +181,18 @@ public sealed class ContractService(QtkdDbContext dbContext)
 
         try
         {
-            // EF Core writes the status and simulated hand-off atomically.
-            // The shared primary key prevents duplicate submissions.
+            // The status change and the simulated hand-off are written in one transaction.
+            // A5: if this fails, neither is saved and the contract keeps its status.
             await dbContext.SaveChangesAsync(cancellationToken);
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException exception)
+            when (exception is DbUpdateConcurrencyException || exception.IsUniqueViolation())
         {
+            // Another request submitted or edited this contract after it was read:
+            // the concurrency token (xmin) or the ContractSubmission primary key rejected the write.
             return OperationResult<ContractSubmissionResponse>.Failure(
-                "conflict",
-                $"Contract {id} has already been submitted or changed by another request.");
+                ApiErrorCodes.Conflict,
+                $"Contract {id} has already been submitted or changed by another request. No changes were saved.");
         }
 
         return OperationResult<ContractSubmissionResponse>.Success(
@@ -185,7 +222,7 @@ public sealed class ContractService(QtkdDbContext dbContext)
                                  contract.Id != existingId,
                      cancellationToken))
         {
-            errors.Add("ContractNo must be unique.");
+            errors.Add(DuplicateContractNoMessage);
         }
 
         if (request.CustomerId <= 0)
@@ -195,7 +232,8 @@ public sealed class ContractService(QtkdDbContext dbContext)
         else
         {
             var customerIsActive = await dbContext.Customers.AnyAsync(
-                customer => customer.Id == request.CustomerId && customer.Status == "Active",
+                customer => customer.Id == request.CustomerId &&
+                            customer.Status == CustomerStatuses.Active,
                 cancellationToken);
             if (!customerIsActive)
             {
@@ -225,36 +263,12 @@ public sealed class ContractService(QtkdDbContext dbContext)
         return errors.Count == 0
             ? null
             : OperationResult<ContractResponse>.Failure(
-                "validation_failed", "Contract data is invalid.", errors);
+                ApiErrorCodes.ValidationFailed, "Contract data is invalid.", errors);
     }
 
-    private static List<string> GetSubmissionErrors(Contract contract)
-    {
-        var errors = new List<string>();
-        if (contract.Customer is null ||
-            !string.Equals(contract.Customer.Status, "Active", StringComparison.OrdinalIgnoreCase))
-        {
-            errors.Add("CTR-02: Customer must exist and be Active.");
-        }
-
-        if (contract.StartDate == default || contract.EndDate == default ||
-            contract.EndDate < contract.StartDate)
-        {
-            errors.Add("CTR-02: StartDate and EndDate must form a valid effective period.");
-        }
-
-        if (string.IsNullOrWhiteSpace(contract.ContentSummary))
-        {
-            errors.Add("CTR-02 demo assumption: ContentSummary is required.");
-        }
-
-        if (string.IsNullOrWhiteSpace(contract.AttachmentFileName))
-        {
-            errors.Add("CTR-02 demo assumption: at least one AttachmentFileName is required.");
-        }
-
-        return errors;
-    }
+    private static OperationResult<ContractResponse> DuplicateContractNo() =>
+        OperationResult<ContractResponse>.Failure(
+            ApiErrorCodes.ValidationFailed, "Contract data is invalid.", [DuplicateContractNoMessage]);
 
     private static string? NormalizeOptional(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim();

@@ -17,13 +17,13 @@ public class CustomersController(CustomerService customerService) : ApiControlle
 
     [HttpGet("{id:int}")]
     [ProducesResponseType<CustomerResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(QTKD.Api.Common.ApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<CustomerResponse>> GetCustomerById(
         int id,
         CancellationToken cancellationToken)
     {
         var customer = await customerService.GetByIdAsync(id, cancellationToken);
-        return customer is null ? NotFound() : Ok(customer);
+        return customer is null ? NotFoundError("Customer", id) : Ok(customer);
     }
 
     [HttpPost]

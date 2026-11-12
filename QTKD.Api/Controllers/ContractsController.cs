@@ -17,18 +17,14 @@ public class ContractsController(ContractService contractService) : ApiControlle
     }
 
     [HttpGet("{id:int}")]
+    [ProducesResponseType<ContractResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(QTKD.Api.Common.ApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ContractResponse>> GetContractById(
         int id,
         CancellationToken cancellationToken)
     {
         var contract = await contractService.GetByIdAsync(id, cancellationToken);
-
-        if (contract is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(contract);
+        return contract is null ? NotFoundError("Contract", id) : Ok(contract);
     }
 
     [HttpPost]
