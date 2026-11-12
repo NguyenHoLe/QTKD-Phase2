@@ -138,6 +138,7 @@ Chỉ chạy một nhóm: `dotnet test tests/QTKD.UnitTests` (không cần Postg
 ```powershell
 git clone https://github.com/NguyenHoLe/QTKD-Phase2.git
 cd QTKD-Phase2
+dotnet build QTKD.sln                                    # restore package + build (bắt buộc trước dotnet ef)
 dotnet user-secrets set "ConnectionStrings:Qtkd" 'Host=localhost;Port=5432;Database=qtkd;Username=postgres;Password=YOUR_POSTGRES_PASSWORD' --project QTKD.Api
 dotnet user-secrets set "ConnectionStrings:QtkdTest" 'Host=localhost;Port=5432;Database=qtkd_test;Username=postgres;Password=YOUR_POSTGRES_PASSWORD' --project tests/QTKD.IntegrationTests
 dotnet ef database update --project QTKD.Api
